@@ -29,6 +29,9 @@ class UserContactsSerializer(serializers.ModelSerializer):
         model = UsersContact
         fields = ['user', 'country_code', 'phone_number']
 
+    def create(self, validated_data):
+         return UsersContact(**validated_data)
+
 class CustomUserSerializer(serializers.ModelSerializer):
     
     contacts = UserContactsSerializer(many=True, read_only=True)

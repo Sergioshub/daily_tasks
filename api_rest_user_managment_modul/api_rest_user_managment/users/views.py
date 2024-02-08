@@ -18,17 +18,16 @@ class CreateUserViewSet(viewsets.ModelViewSet):
     basename = 'customuser'
 
 
-
 class UserDetailView(APIView):
     
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         user = request.user
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
     
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = UserContactsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)

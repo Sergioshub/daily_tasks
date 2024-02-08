@@ -23,14 +23,18 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 class UserContactsSerializer(serializers.ModelSerializer):
     
-    # user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(), write_only=True)
+    country_code = serializers.CharField(help_text="Код страны")
+    phone_number = serializers.CharField(help_text="Номер телефона")
 
     class Meta:
         model = UsersContact
-        fields = ['user', 'country_code', 'phone_number']
+        fields = ['country_code', 'phone_number']
 
     def create(self, validated_data):
-         return UsersContact(**validated_data)
+        user = self.context['request'].user
+        validated_data['user'] = user
+        return UsersContact.objects.create(**validated_data)
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     

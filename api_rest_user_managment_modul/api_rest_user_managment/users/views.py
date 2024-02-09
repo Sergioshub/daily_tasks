@@ -1,35 +1,36 @@
-from rest_framework import viewsets
-from users.models import CustomUser
-from users.serializers import CustomUserSerializer, CreateUserSerializer, UserContactsSerializer
-from rest_framework.views import APIView
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
-# Create your views here.
-
-class CreateUserViewSet(viewsets.ModelViewSet):
-    
-    serializer_class = CreateUserSerializer
-
-    def get_queryset(self):
-        user_id = self.request.user.id
-        return CustomUser.objects.filter(id=user_id)
-        
-    basename = 'customuser'
+from rest_framework.views import APIView
+from users.models import CustomUser
+from users.serializers import CustomUserSerializer, UserContactSerializer
 
 
-class UserDetailView(APIView):
-    
+class UserCreateView(generics.CreateAPIView):
+    queryset = CustomUser.objects.none()  # Поставил заглушку чтобы список пользователей не был доступен всем.
+    serializer_class = CustomUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return Response({"error": "User creation not allowed for authenticated users"}, status=status.HTTP_403_FORBIDDEN)
+        return super().create(request, *args, **kwargs)
+
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+
+    serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        user = request.user
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
+    def get_object(self):
+        return self.request.user 
+    
+
+class UserAddressView(APIView):
+    
+    permission_classes = [IsAuthenticated]
     
     def post(self, request):
-        serializer = UserContactsSerializer(data=request.data, context={'request': request})
+        serializer = UserContactSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)

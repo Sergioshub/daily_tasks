@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=150)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
     date_joined = models.DateTimeField(default=timezone.now)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
 
 
 class UsersContact(models.Model):

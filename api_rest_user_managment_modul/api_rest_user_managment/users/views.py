@@ -2,18 +2,24 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer, UserContactSerializer
+from users.captcha import CaptchaValidator
 
 
 class UserCreateView(generics.CreateAPIView):
-    queryset = CustomUser.objects.none()  # Поставил заглушку чтобы список пользователей не был доступен всем.
+    queryset = CustomUser.objects.none()
     serializer_class = CustomUserSerializer
+    captcha_validator = CaptchaValidator()
 
     def create(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return Response({"error": "User creation not allowed for authenticated users"}, status=status.HTTP_403_FORBIDDEN)
+        captcha_response = request.data.get('captcha_response')
+        success, message = self.captcha_validator.validate_captcha(captcha_response)
+        if not success:
+            return Response({"error": message}, status=status.HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)
+    
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 

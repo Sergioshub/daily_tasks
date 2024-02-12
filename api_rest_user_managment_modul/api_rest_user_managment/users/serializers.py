@@ -17,12 +17,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     contacts = UserContactSerializer(many=True, read_only=True)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    captcha_response = serializers.CharField(max_length=100, write_only=True) 
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'first_name', 'last_name', 'middle_name', 'email', 'password', 'contacts']  
+        fields = ['id', 'username', 'first_name', 'last_name', 'middle_name', 'email', 'password', 'captcha_response','contacts']  
   
     def create(self, validated_data):
+        # captcha_response = validated_data.pop('captcha_response', None)
         password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
         validate_password(password)

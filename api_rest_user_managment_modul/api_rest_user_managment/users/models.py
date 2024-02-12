@@ -18,8 +18,6 @@ class UsersContact(models.Model):
     phone_number = models.CharField(max_length=15)
     updated_at = models.DateTimeField(default=timezone.now)
 
-    # user = CustomUser.objects.get(id=1)
-    # contacts = user.contacts.all()
     
     def __str__(self):
         return f"{self.user.username}'s contacts: {self.country_code}, {self.phone_number}" 

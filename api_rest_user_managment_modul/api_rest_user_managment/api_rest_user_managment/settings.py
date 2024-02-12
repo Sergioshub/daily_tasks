@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g=3sx#8gh^-1*t1cc!l^^(cisg7g+fv!b=$qf-ka-9jp4$dy!5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 'captcha',
 
     'rest_framework',
     'users',
@@ -132,4 +134,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 AUTH_USER_MODEL = 'users.CustomUser'
+
+RECAPTCHA_PUBLIC_KEY = '6LeEFG8pAAAAACcvCZ3WZ1f12Kb1So37zsKhfGrt'
+RECAPTCHA_PRIVATE_KEY = '6LeEFG8pAAAAAPMKxwaPduQp-kkA2PLb2x2cJyL7'

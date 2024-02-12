@@ -20,7 +20,7 @@ from users.views import UserDetailView, UserCreateView, UserAddressView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/create', UserCreateView.as_view(), name='user-list-create'),
+    path('api/users/create', UserCreateView.as_view(), name='user-create'),
     path('api/users/profile/', UserDetailView.as_view(), name='user-detail'),
     path('api/users/address/', UserAddressView.as_view(), name='user-address'),
     path('api/auth/', include('rest_framework.urls')),  
